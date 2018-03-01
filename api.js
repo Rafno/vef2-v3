@@ -47,7 +47,7 @@ router.post('/', (req, res) => {
       text: data.text,
       datetime: data.datetime,
     });
-    res.status(200).json({
+    res.status(201).json({
       title: data.title,
       text: data.text,
       datetime: data.datetime,
@@ -88,7 +88,7 @@ router.delete(
     const data = await readOne(id);
     if (data.length !== 0) {
       await del(id);
-      res.status(200).json({});
+      res.status(204).json({});
     } else {
       res.status(404).json({
         error: 'ID not found',
