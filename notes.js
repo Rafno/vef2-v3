@@ -17,8 +17,8 @@ const connectionString = process.env.DATABASE_URL || 'postgres://:@localhost/pos
 async function create({ title, text, datetime } = {}) {
   const client = new Client({ connectionString });
   await client.connect();
-  await client.query(
-    'INSERT INTO notes(title, text, datetime) VALUES ($1, $2, $3);',
+  const data = await client.query(
+    'INSERT INTO notes(title, text, datetime) VALUES ($1, $2, $3) RETURNING id, title, text, datetime;',
     [
       xss(title),
       xss(text),
@@ -26,6 +26,7 @@ async function create({ title, text, datetime } = {}) {
     ],
   );
   await client.end();
+  return data.rows;
 }
 
 /**
@@ -76,7 +77,7 @@ async function update(id, { title, text, datetime } = {}) {
   const client = new Client({ connectionString });
   await client.connect();
   const data = await client.query(
-    'UPDATE notes SET title = $1, text = $2, datetime = $3 WHERE id = $4;',
+    'UPDATE notes SET title = $1, text = $2, datetime = $3 WHERE id = $4 RETURNING id, datetime, title, text;',
     [
       xss(title),
       xss(text),

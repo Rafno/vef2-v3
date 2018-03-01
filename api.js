@@ -108,11 +108,12 @@ router.put(
     const searcher = await readOne(id);
     if (searcher.length !== 0) {
       if (validate(data, res) === true) {
-        await update(id, {
+        const files = await update(id, {
           title: data.title,
           text: data.text,
           datetime: data.datetime,
         });
+        res.status(200).json({ files })
       }
     } else {
       res.status(404).json({
